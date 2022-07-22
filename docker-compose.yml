@@ -1,0 +1,37 @@
+version: '3.3'
+services:
+  web:
+    build: ./config
+    networks:
+      - web
+      - private
+    volumes:
+      - ./app:/app:delegated      
+    environment:
+      - LOG_STDOUT=/dev/stdout
+      - LOG_STDERR=/dev/stderr
+      - WEB_DOCUMENT_ROOT=/app
+    ports:
+      - "8082:80"
+
+  mysql:
+    image: mysql:5.7.21
+    ports:
+      - "3306:3306"
+    networks:
+      - private
+    volumes:
+      - ./mysql:/var/lib/mysql
+      - ./config:/etc/mysql/conf.d
+    user: 1000:1000
+    environment:
+      PMA_HOST: mysql
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: real_assets
+      MYSQL_USER: assets_user
+      MYSQL_PASSWORD: assets_password
+
+
+networks:
+  web:
+  private:
